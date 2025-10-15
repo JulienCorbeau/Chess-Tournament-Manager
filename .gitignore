@@ -2,11 +2,6 @@
 #      Project-specific rules for Chess Tournament Manager
 # ===================================================================
 
-# Ignore dynamic data files that change during execution.
-# The application state (players, tournaments) should not be versioned.
-data/players.json
-data/tournaments/tournaments.json
-
 # IMPORTANT EXCEPTION: The flake8 report is a required deliverable.
 # The '!' ensures this directory is NOT ignored, even if a broader
 # rule (like '*_rapport/') might match it.
