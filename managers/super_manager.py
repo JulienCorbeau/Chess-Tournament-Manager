@@ -2,7 +2,12 @@ import json
 import os
 
 from models.player import Player
+from models.tournament import Tournament
 
+# Player and Tournament have the same structure, need to create Manager as parent class
+class SuperManager:
+    """Base class for managing data storage and retrieval."""
+    pass
 
 class PlayerManager:
     """Manages player data storage and retrieval."""
@@ -12,8 +17,7 @@ class PlayerManager:
         Initializes the PlayerManager.
 
         Args:
-            file_path (str): The path to the JSON file where players
-                are stored.
+            file_path (str): The path to the JSON file where players are stored.
         """
         self.file_path = file_path
         # Ensure the directory exists
@@ -33,24 +37,19 @@ class PlayerManager:
         try:
             with open(self.file_path, 'r') as f:
                 data = json.load(f)
-            return [
-                Player(**player_data) for player_data in data
-            ]
+            return [Player.from_dict(player_data) for player_data in data]
         except (json.JSONDecodeError, FileNotFoundError):
-            # Return an empty list if the file is empty or doesn't exist
-            return []
+            return []  # Return an empty list if the file is empty or doesn't exist
 
     def save_players(self, players):
         """
         Saves a list of players to the JSON file.
 
         Args:
-            players (list): A list of Player instances to
-                save.
+            players (list): A list of Player instances to save.
         """
-        with open(self.file_path, 'w') as f:
-            player_data = [player.to_dict() for player in players]
-            json.dump(player_data, f, indent=4)
+        with open(self.file_path, 'w') as f:                                                    #Aurélien : Réecriture totale du fichier, qu'en penses tu ? 
+            json.dump([player.to_dict() for player in players], f, indent=4)
 
     def add_player(self, player):
         """
@@ -62,3 +61,5 @@ class PlayerManager:
         players = self.load_players()
         players.append(player)
         self.save_players(players)
+
+

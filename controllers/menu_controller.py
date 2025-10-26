@@ -6,7 +6,8 @@ class MenuController:
         Initializes the MenuController.
 
         Args:
-            app_controller (ApplicationController): The main application controller instance.
+            app_controller (ApplicationController): The main application
+                controller instance.
         """
         self.app_controller = app_controller
         self.view = app_controller.view
@@ -17,15 +18,15 @@ class MenuController:
         """
         while True:
             choice = self.view.display_main_menu()
-            if choice == "1":
+            if choice == "1":  # Add new player
                 self.app_controller.add_new_player()
-            elif choice == "2":
-                self.view.display_message("\n Pas encore implémenté.")
-            elif choice == "3":
-                self.view.display_message("\n Pas encore implémenté.")
-            elif choice == "4":
+            elif choice == "2":  # Add new tournament
+                self.app_controller.create_new_tournament()
+            elif choice == "3":  # Manage tournament
+                self.view.display_message("\nPas encore implémenté.")
+            elif choice == "4":  # Show repports menu
                 self.show_reports_menu()
-            elif choice == "5":
+            elif choice == "5":  # Close application
                 self.view.display_goodbye_message()
                 break
             else:
@@ -37,17 +38,18 @@ class MenuController:
         """
         while True:
             choice = self.view.display_reports_menu()
-            if choice == "1":
+            if choice == "1":  # Players repports
                 self.app_controller.display_all_players_report()
-            elif choice == "2":
+            elif choice == "2":  # Tournament repports
                 self.app_controller.display_all_tournaments_report()
-            elif choice == "3":
+            elif choice == "3":  # Details tournament
                 self.app_controller.display_tournament_details_report()
-            elif choice == "4":
+            elif choice == "4":  # Details players of a tournament
                 self.app_controller.display_tournament_players_report()
             elif choice == "5":
+                # Details Round and matchs of a tournament
                 self.app_controller.display_tournament_rounds_report()
-            elif choice == "6":
-                break  
+            elif choice == "6":  # Return main menu
+                break
             else:
                 self.view.display_validation_error("Choix invalide.")

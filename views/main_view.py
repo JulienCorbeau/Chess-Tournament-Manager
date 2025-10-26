@@ -52,8 +52,7 @@ class MainView:
             "date_of_birth": date_of_birth,
             "national_id": national_id
         }
-    
-    
+
     def display_message(self, message):
         """
         Displays a general message to the user.
@@ -75,18 +74,19 @@ class MainView:
 
     def display_welcoming_message(self):
         """
-        Displays a welcoming message to the user.
+D        Displays a welcoming message to the user.
         """
         print("Bienvenue dans le système de gestion des tournois d'échecs!")
-    
 
     def display_goodbye_message(self):
         """
-        Displays a welcoming message to the user.
+        Displays a goodbye message to the user.
         """
-        print("Merci d'avoir utilisé le système de gestion des tournois d'échecs. Au revoir!")
+        print(
+            "Merci d'avoir utilisé le système de gestion des tournois d'échecs. "
+            "Au revoir!"
+        )
 
-    
     def display_validation_error(self, error_message):
         """
         Displays a validation error message in a noticeable format.
@@ -94,4 +94,37 @@ class MainView:
         Args:
             error_message (str): The error message to display.
         """
-        print(f"\n[ERROR] {error_message} Please try again.\n")
+        print(f"\n[ERREUR] {error_message} Veuillez réessayer.\n")
+
+    def prompt_for_new_tournament(self):
+        """
+        Prompts the user to enter information for a new tournament.
+
+        Returns:
+            dict: A dictionary containing the new tournament's information.
+        """
+        print("\n--- Créer un Nouveau Tournoi ---")
+        name = input("Entrez le nom du tournoi : ")
+        location = input("Entrez le lieu du tournoi : ")
+        start_date = input("Entrez la date de début (YYYY-MM-DD) : ")
+        end_date = input("Entrez la date de fin (YYYY-MM-DD) : ")
+        description = input("Entrez une description pour le tournoi : ")
+        number_of_rounds_str = input("Entrez le nombre de tours (par défaut 4) : ")
+
+        return {
+            "name": name,
+            "location": location,
+            "start_date": start_date,
+            "end_date": end_date,
+            "description": description,
+            "number_of_rounds_str": number_of_rounds_str
+        }
+
+    def create_tournament_message(self, tournament_name):
+        """
+        Displays a message confirming the creation of a new tournament.
+
+        Args:
+            tournament_name (str): The name of the newly created tournament.
+        """
+        print(f"\nLe tournoi '{tournament_name}' a été créé avec succès!\n")

@@ -44,23 +44,3 @@ class Player:
             "total_points": self.total_points,
             "opponents_history": self.opponents_history,
         }
-
-    @classmethod
-    def from_dict(cls, data):
-        """
-        Creates a Player instance from a dictionary.
-
-        Args:
-            data (dict): The dictionary containing player data.
-
-        Returns:
-            Player: A new Player instance.
-        """
-        return cls(
-            last_name=data["last_name"],
-            first_name=data["first_name"],
-            date_of_birth=data["date_of_birth"],
-            national_id=data["national_id"],
-            total_points=data.get("total_points", 0.0),
-            opponents_history=data.get("opponents_history", []),
-        )

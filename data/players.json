@@ -102,5 +102,29 @@
         "national_id": "NH19878",
         "total_points": 0.0,
         "opponents_history": []
+    },
+    {
+        "last_name": "CARUANA",
+        "first_name": "Fabiano",
+        "date_of_birth": "1992-03-01",
+        "national_id": "FC19923",
+        "total_points": 0.0,
+        "opponents_history": []
+    },
+    {
+        "last_name": "SONG",
+        "first_name": "Julien",
+        "date_of_birth": "1985-06-15",
+        "national_id": "JS19856",
+        "total_points": 0.0,
+        "opponents_history": []
+    },
+    {
+        "last_name": "PRAGGNANANDHAA",
+        "first_name": "Rameshbabu",
+        "date_of_birth": "2005-01-25",
+        "national_id": "RP20051",
+        "total_points": 0.0,
+        "opponents_history": []
     }
 ]
