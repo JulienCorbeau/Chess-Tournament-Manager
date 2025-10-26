@@ -3,6 +3,7 @@ import os
 
 from models.tournament import Tournament
 
+
 class TournamentManager:
     """Manages tournament data storage and retrieval."""
 
@@ -11,8 +12,9 @@ class TournamentManager:
         Initializes the TournamentManager.
 
         Args:
-            file_path (str): The path to the JSON file where tournaments are stored.
-                             Defaults to the path from the architecture diagram.
+            file_path (str): The path to the JSON file where tournaments
+                are stored. Defaults to the path from the
+                architecture diagram.
         """
         self.file_path = file_path
         # Ensure the directory exists (e.g., data/tournaments/)
@@ -33,10 +35,12 @@ class TournamentManager:
         try:
             with open(self.file_path, 'r') as f:
                 data = json.load(f)
-            # Use dictionary unpacking (**data) to initialize Tournament objects
-            return [Tournament(**tournament_data) for tournament_data in data]
+            return [
+                Tournament(**tournament_data) for tournament_data in data
+            ]
         except (json.JSONDecodeError, FileNotFoundError):
-            return []  # Return an empty list if file is empty, corrupt, or not found
+            # Return an empty list if file is empty, corrupt, or not found
+            return []
 
     def save_tournaments(self, tournaments):
         """
@@ -44,12 +48,14 @@ class TournamentManager:
         Calls .to_dict() on each tournament object.
 
         Args:
-            tournaments (list): A list of Tournament instances to save.
+            tournaments (list): A list of Tournament instances to
+                save.
         """
-        with open(self.file_path, 'w') as f:
-            # Convert each Tournament object to its dict representation
-            data_to_save = [tournament.to_dict() for tournament in tournaments]
-            json.dump(data_to_save, f, indent=4)
+        with open(self.file_path, 'w', encoding='utf-8') as f:
+            data_to_save = [
+                tournament.to_dict() for tournament in tournaments
+            ]
+            json.dump(data_to_save, f, indent=4, ensure_ascii=False)
 
     def add_tournament(self, tournament):
         """

@@ -48,9 +48,9 @@ class PlayerManager:
             players (list): A list of Player instances to
                 save.
         """
-        with open(self.file_path, 'w') as f:
+        with open(self.file_path, 'w', encoding='utf-8') as f:
             player_data = [player.to_dict() for player in players]
-            json.dump(player_data, f, indent=4)
+            json.dump(player_data, f, indent=4, ensure_ascii=False)
 
     def add_player(self, player):
         """
