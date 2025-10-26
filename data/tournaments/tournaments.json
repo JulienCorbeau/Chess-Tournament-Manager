@@ -1,0 +1,57 @@
+[
+    {
+        "name": "Tournoi de Paris",
+        "location": "Montmartre",
+        "description": "Premier tournoi organisé par la FFE",
+        "start_date": "2025-10-25",
+        "end_date": "2025-10-28",
+        "number_of_rounds": 4,
+        "current_round": 1,
+        "rounds": [],
+        "players": []
+    },
+    {
+        "name": "Tournoi de Montréal",
+        "location": "Montréal",
+        "description": "Deuxième tournoi organisé par la FFE",
+        "start_date": "2025-12-12",
+        "end_date": "2025-12-18",
+        "number_of_rounds": 6,
+        "current_round": 1,
+        "rounds": [],
+        "players": []
+    },
+    {
+        "name": "Tournoi de Bali",
+        "location": "Bali",
+        "description": "Troisième tournoi mais il arrive vite",
+        "start_date": "2025-10-23",
+        "end_date": "2025-10-24",
+        "number_of_rounds": 3,
+        "current_round": 1,
+        "rounds": [],
+        "players": []
+    },
+    {
+        "name": "Chessing Tour",
+        "location": "Brisbane",
+        "description": "Amazing tournament !",
+        "start_date": "2026-02-10",
+        "end_date": "2026-02-14",
+        "number_of_rounds": 4,
+        "current_round": 1,
+        "rounds": [],
+        "players": []
+    },
+    {
+        "name": "Madrid",
+        "location": "La Latina - Madrid",
+        "description": "Un tournoi pour les dominer tous !",
+        "start_date": "2026-01-12",
+        "end_date": "2026-01-16",
+        "number_of_rounds": 4,
+        "current_round": 1,
+        "rounds": [],
+        "players": []
+    }
+]

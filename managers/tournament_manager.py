@@ -33,7 +33,7 @@ class TournamentManager:
             list: A list of Tournament instances.
         """
         try:
-            with open(self.file_path, 'r') as f:
+            with open(self.file_path, 'r', encoding='utf-8') as f:
                 data = json.load(f)
             return [
                 Tournament(**tournament_data) for tournament_data in data
