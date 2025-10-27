@@ -1,69 +1,28 @@
-import json
-import os
-
 from models.tournament import Tournament
+from managers.base_manager import BaseManager
 
 
-class TournamentManager:
+class TournamentManager(BaseManager):
     """Manages tournament data storage and retrieval."""
 
     def __init__(self, file_path='data/tournaments/tournaments.json'):
         """
-        Initializes the TournamentManager.
-
-        Args:
-            file_path (str): The path to the JSON file where tournaments
-                are stored. Defaults to the path from the
-                architecture diagram.
+        Initializes the TournamentManager, passing the file path
+        and the Tournament model to the parent.
         """
-        self.file_path = file_path
-        # Ensure the directory exists (e.g., data/tournaments/)
-        os.makedirs(os.path.dirname(self.file_path), exist_ok=True)
-        # Ensure the file exists
-        if not os.path.exists(self.file_path):
-            with open(self.file_path, 'w') as f:
-                json.dump([], f)  # Start with an empty list
+        super().__init__(file_path, Tournament)
 
     def load_tournaments(self):
-        """
-        Loads all tournaments from the JSON file using the
-        dictionary unpacking method.
-
-        Returns:
-            list: A list of Tournament instances.
-        """
-        try:
-            with open(self.file_path, 'r', encoding='utf-8') as f:
-                data = json.load(f)
-            return [
-                Tournament(**tournament_data) for tournament_data in data
-            ]
-        except (json.JSONDecodeError, FileNotFoundError):
-            # Return an empty list if file is empty, corrupt, or not found
-            return []
+        """Loads all tournaments using the generic parent method."""
+        return self.load_all()
 
     def save_tournaments(self, tournaments):
-        """
-        Saves a list of tournaments to the JSON file.
-        Calls .to_dict() on each tournament object.
-
-        Args:
-            tournaments (list): A list of Tournament instances to
-                save.
-        """
-        with open(self.file_path, 'w', encoding='utf-8') as f:
-            data_to_save = [
-                tournament.to_dict() for tournament in tournaments
-            ]
-            json.dump(data_to_save, f, indent=4, ensure_ascii=False)
+        """Saves tournaments using the generic parent method."""
+        self.save_all(tournaments)
 
     def add_tournament(self, tournament):
         """
-        Adds a new tournament to the storage by loading all,
-        appending the new one, and saving back.
-
-        Args:
-            tournament (Tournament): The Tournament instance to add.
+        Adds a new tournament to the storage.
         """
         tournaments = self.load_tournaments()
         tournaments.append(tournament)
