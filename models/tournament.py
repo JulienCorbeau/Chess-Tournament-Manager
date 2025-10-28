@@ -12,6 +12,7 @@ class Tournament:
         current_round=1,
         rounds=None,
         players=None,
+        tournament_id=None
     ):
         """
         Initializes a Tournament instance.
@@ -26,6 +27,7 @@ class Tournament:
             current_round (int): The current round number. Defaults to 1.
             rounds (list, optional): List of Round objects or dicts (from JSON). Defaults to None.
             players (list, optional): List of Player objects or player IDs (from JSON). Defaults to None.
+            tournament_id (int, optional): The unique ID of the tournament. Defaults to None.
         """
         self.name = name
         self.location = location
@@ -37,6 +39,7 @@ class Tournament:
         # This is empty for the moment:
         self.rounds = rounds if rounds is not None else []
         self.players = players if players is not None else []
+        self.tournament_id = tournament_id
 
     def to_dict(self):
         """
@@ -47,6 +50,7 @@ class Tournament:
             dict: A dictionary representation of the tournament.
         """
         return {
+            "tournament_id": self.tournament_id,
             "name": self.name,
             "location": self.location,
             "description": self.description,

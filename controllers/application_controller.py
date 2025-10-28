@@ -91,13 +91,11 @@ class ApplicationController:
             return "Le nom et le lieu ne peuvent pas être vides."
 
         try:
-            datetime.strptime(tournament_data["start_date"], "%Y-%m-%d")
-            datetime.strptime(tournament_data["end_date"], "%Y-%m-%d")
+            start = datetime.strptime(tournament_data["start_date"], "%Y-%m-%d")
+            end = datetime.strptime(tournament_data["end_date"], "%Y-%m-%d")
         except ValueError:
             return "Format de date invalide. Veuillez utiliser YYYY-MM-DD."
 
-        start = datetime.strptime(tournament_data["start_date"], "%Y-%m-%d")
-        end = datetime.strptime(tournament_data["end_date"], "%Y-%m-%d")
         if end < start:
             return (
                 "La date de fin ne peut pas être antérieure à la date de "
@@ -127,8 +125,11 @@ class ApplicationController:
             if error:
                 self.view.display_validation_error(error)
                 continue
+
             rounds_str = tournament_data["number_of_rounds_str"]
             number_of_rounds = int(rounds_str) if rounds_str else 4
+            new_id = self.tournament_manager.get_next_id()
+
             tournament = Tournament(
                 name=tournament_data["name"],
                 location=tournament_data["location"],
@@ -136,7 +137,9 @@ class ApplicationController:
                 end_date=tournament_data["end_date"],
                 description=tournament_data["description"],
                 number_of_rounds=number_of_rounds,
+                tournament_id=new_id
             )
+
             self.tournament_manager.add_tournament(tournament)
             self.view.create_tournament_message(tournament.name)
             break
@@ -150,16 +153,13 @@ class ApplicationController:
 
     # --- Need to implement ---
     def display_tournament_details_report(self):
-        msg = ("\n--- Rapport sur les Détails d'un Tournoi --- "
-               "(Pas encore implémenté)")
+        msg = ("\n--- Rapport sur les Détails d'un Tournoi --- (Pas encore implémenté)")
         self.view.display_message(msg)
 
     def display_tournament_players_report(self):
-        msg = ("\n--- Rapport sur les Joueurs d'un Tournoi --- "
-               "(Pas encore implémenté)")
+        msg = ("\n--- Rapport sur les Joueurs d'un Tournoi --- (Pas encore implémenté)")
         self.view.display_message(msg)
 
     def display_tournament_rounds_report(self):
-        msg = ("\n--- Rapport sur les Rounds et Matchs d'un Tournoi --- "
-               "(Pas encore implémenté)")
+        msg = ("\n--- Rapport sur les Rounds et Matchs d'un Tournoi --- (Pas encore implémenté)")
         self.view.display_message(msg)
