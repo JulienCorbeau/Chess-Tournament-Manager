@@ -11,7 +11,7 @@ class MainView:
         print("\n--- Menu Principal ---")
         print("1. Ajouter un nouveau joueur")
         print("2. Créer un nouveau tournoi")
-        print("3. Gérer un tournoi existant (Pas encore implémenté)")
+        print("3. Gérer un tournoi existant")
         print("4. Voir les rapports")
         print("5. Quitter l'application")
         return input("\nEntrez votre choix : ")
@@ -128,3 +128,53 @@ D        Displays a welcoming message to the user.
             tournament_name (str): The name of the newly created tournament.
         """
         print(f"\nLe tournoi '{tournament_name}' a été créé avec succès!\n")
+
+    def display_tournament_management_menu(self, tournament_name):
+        """
+        Displays the tournament management menu for a specific tournament.
+
+        Args:
+            tournament_name (str): The name of the tournament being managed.
+        """
+        print(f"\n--- Gestion du Tournoi : {tournament_name} ---")
+        print("1. Inscrire un joueur")
+        print("2. Démarrer le tournoi")
+        print("3. Afficher les résultats")
+        print("4. Retourner au menu principal")
+        return input("\nEntrez votre choix : ")
+    
+    def prompt_for_selection(self, items, title, item_name_attr):
+        """
+        Displays a numbered list of items and asks the user to select one.
+        
+        Args:
+            items (list): The list of objects to choose from. (e.g., list of Player or Tournament instances).
+            title (str): Title to display for the list. (e.g., "Tournois" or "Joueurs").
+            item_name_attr (str): The attribute of the object to display as its name (e.g., "name" or "national_id").
+
+        Returns:
+            object: The selected item, or None if no selection.
+        """
+        print(f"\n--- Sélectionner un {title} ---")
+        if not items:
+            print(f"Aucun {title.lower()} disponible.")
+            return None
+        
+        for index, item in enumerate(items, start=1):
+            if item_name_attr == "name":
+                print(f"{index}. {item.name} (ID: {item.tournament_id})")
+            else:
+                print(f"{index}. {item.first_name} {item.last_name} (ID: {item.national_id})")
+        print("0. Annuler")
+
+        while True:
+            try:
+                choice = int(input("\nEntrez le numéro de votre choix : "))
+                if choice == 0:
+                    return None
+                elif 1 <= choice <= len(items):
+                    return items[choice - 1]
+                else:
+                    print("Choix invalide. Veuillez réessayer.")
+            except ValueError:
+                print("Entrée invalide. Veuillez entrer un numéro.")

@@ -144,6 +144,119 @@ class ApplicationController:
             self.view.create_tournament_message(tournament.name)
             break
 
+    def manage_tournament(self):
+        """
+        Orchestrates the process of managing an existing tournament.
+        """
+        tournaments = self.tournament_manager.load_tournaments()
+
+        # Ask user to select a tournament
+        selected_tournament = self.view.prompt_for_selection(
+            tournaments,
+            "--- Gérer un Tournoi Existant ---",
+            "name"
+        )
+
+        if selected_tournament is None:
+            self.view.display_message("Aucun tournoi sélectionné.")
+            return
+
+        self._hydrate_tournament_players(selected_tournament)
+
+        while True:
+            choice = self.view.display_tournament_management_menu(
+                selected_tournament.name
+            )
+            if choice == "1":  # Register a player
+                self.add_player_to_tournament(selected_tournament)
+            elif choice == "2":  # Start the tournament
+                self.view.display_message(
+                    "\nDémarrage du tournoi... (Pas encore implémenté)"
+                )
+            elif choice == "3":  # Show results
+                self.view.display_message(
+                    "\nAffichage des résultats du tournoi... (Pas encore implémenté)"
+                ) 
+            elif choice == "4":  # Exit
+                break
+            else:
+                self.view.display_message("Choix invalide. Veuillez réessayer.")
+
+    def add_player_to_tournament(self, tournament):
+        """
+        Adds an existing player to the selected tournament.
+        """
+        # Load all players
+        all_players = self.player_manager.load_players()
+
+        # Get the list of already enrolled IDs
+        enrolled_player_ids = {
+            player.national_id for player in tournament.players
+        }
+
+        # Filter to only show unregistered players
+        available_players = [
+            player for player in all_players 
+            if player.national_id not in enrolled_player_ids
+        ]
+        if not available_players:
+            self.view.display_message("Tous les joueurs sont déjà inscrits à ce tournoi.")
+            return
+
+        # Ask user to select a player
+        selected_player = self.view.prompt_for_selection(
+            available_players, 
+            "Joueur", 
+            "national_id"
+        )
+
+        if selected_player is None:
+            self.view.display_message("Sélection annulée.")
+            return
+
+        # Add player to tournament
+        tournament.players.append(selected_player)
+
+        # Save all tournaments with updated tournament
+        all_tournaments = self.tournament_manager.load_tournaments()
+        # Find and update the tournament in the list
+        for i, tournament_choice in enumerate(all_tournaments):
+            if tournament_choice.tournament_id == tournament.tournament_id:
+                all_tournaments[i] = tournament
+                break
+        
+        self.tournament_manager.save_tournaments(all_tournaments)
+        self.view.display_message(
+            f"Le joueur {selected_player.first_name} {selected_player.last_name} "
+            f"a été inscrit au tournoi {tournament.name}."
+        )    
+    
+    def _hydrate_tournament_players(self, tournament):
+            """
+            Helper method to convert a list of player IDs in a tournament
+            into a list of full Player objects.
+            """
+            # If the players are already Player objects, assume
+            # that it's already hydrated
+            if not tournament.players or hasattr(tournament.players[0], 'national_id'):
+                return
+
+            all_players = self.player_manager.load_players()
+            hydrated_players = []
+            player_id_map = {
+                player.national_id: player for player in all_players
+            }
+
+            for player_id in tournament.players:
+                if player_id in player_id_map:
+                    hydrated_players.append(player_id_map[player_id])
+                else:
+                    # Manage the case where the player ID is not found,
+                    # but the player has been deleted
+                    print(f"Attention: Joueur ID {player_id} non trouvé.")
+            
+            tournament.players = hydrated_players
+
     def display_all_tournaments_report(self):
         """
         Loads tournaments and passes them to the report view.

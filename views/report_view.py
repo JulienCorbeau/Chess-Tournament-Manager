@@ -22,7 +22,6 @@ class ReportView:
         print(f"{'Nom':<20} {'Prénom':<20} {'Né(e) le':<15} {'ID Nationale'}")
         print("-" * 75)
         for player in sorted_players:
-            # On construit la ligne avant de l'afficher pour respecter E501
             line = (
                 f"{player.last_name:<20} {player.first_name:<20} "
                 f"{player.date_of_birth:<15} {player.national_id}"
@@ -50,7 +49,6 @@ class ReportView:
         print(f"{'Nom du Tournoi':<30} {'Lieu':<25} {'Début':<12} {'Fin':<12}")
         print("-" * 80)
         for tournament in sorted_tournaments:
-            # On construit la ligne avant de l'afficher pour respecter E501
             line = (
                 f"{tournament.name:<30} {tournament.location:<25} "
                 f"{tournament.start_date:<12} {tournament.end_date:<12}"

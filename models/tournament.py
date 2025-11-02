@@ -36,7 +36,6 @@ class Tournament:
         self.end_date = end_date
         self.number_of_rounds = number_of_rounds
         self.current_round = current_round
-        # This is empty for the moment:
         self.rounds = rounds if rounds is not None else []
         self.players = players if players is not None else []
         self.tournament_id = tournament_id
@@ -45,10 +44,19 @@ class Tournament:
         """
         Serializes the Tournament object to a dictionary
         suitable for JSON storage.
+        Player objects are serialized to a list of player IDs.
 
         Returns:
             dict: A dictionary representation of the tournament.
         """
+
+        player_ids = []
+        for player in self.players:
+            if hasattr(player, 'national_id'):
+                player_ids.append(player.national_id)
+            else:
+                player_ids.append(player)
+
         return {
             "tournament_id": self.tournament_id,
             "name": self.name,
@@ -58,7 +66,6 @@ class Tournament:
             "end_date": self.end_date,
             "number_of_rounds": self.number_of_rounds,
             "current_round": self.current_round,
-            # Need to be update with round & match module :
             "rounds": self.rounds,
-            "players": self.players,
+            "players": player_ids,
         }

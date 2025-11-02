@@ -23,7 +23,7 @@ class MenuController:
             elif choice == "2":  # Add new tournament
                 self.app_controller.create_new_tournament()
             elif choice == "3":  # Manage tournament
-                self.view.display_message("\nPas encore implémenté.")
+                self.app_controller.manage_tournament()
             elif choice == "4":  # Show repports menu
                 self.show_reports_menu()
             elif choice == "5":  # Close application
