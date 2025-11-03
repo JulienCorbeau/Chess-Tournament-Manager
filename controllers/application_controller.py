@@ -1,3 +1,5 @@
+# controllers/application_controller.py
+
 import re
 from datetime import datetime
 
@@ -14,7 +16,9 @@ class ApplicationController:
     """Main controller for the application logic."""
 
     def __init__(self):
-        """Initializes the main controller."""
+        """
+        Initializes the main controller.
+        """
         self.view = MainView()
         self.player_manager = PlayerManager()
         self.tournament_manager = TournamentManager()
@@ -40,13 +44,18 @@ class ApplicationController:
                 self.view.display_validation_error(error)
                 continue
 
+            new_id = self.player_manager.get_next_id()
+
             player = Player(
                 last_name=player_data["last_name"].upper(),
                 first_name=player_data["first_name"].capitalize(),
                 date_of_birth=player_data["date_of_birth"],
                 national_id=player_data["national_id"],
+                player_id=new_id  
             )
-            self.player_manager.add_player(player)
+            
+            self.player_manager.add_item(player)
+            
             self.view.create_player_message(
                 player.last_name, player.first_name
             )
@@ -56,31 +65,26 @@ class ApplicationController:
         """
         Validates the data collected for a new player.
         """
-        # Validate names are not empty
         if not player_data["last_name"] or not player_data["first_name"]:
             return "Le nom et le prénom ne peuvent pas être vides."
-
-        # Validate date format
         try:
             datetime.strptime(player_data["date_of_birth"], "%Y-%m-%d")
         except ValueError:
             return "Format de date invalide. Veuillez utiliser YYYY-MM-DD."
-
-        # Validate national chess ID format (two letters, five numbers)
         if not re.match(r"^[A-Z]{2}\d{5}$", player_data["national_id"]):
             return (
                 "Format d'ID d'échecs national invalide. Il doit être "
                 "au format 'AB12345'."
             )
-
         return None
+
 
     def display_all_players_report(self):
         """
         Loads all players, sorts them, and displays them using the
         report view.
         """
-        players = self.player_manager.load_players()
+        players = self.player_manager.load_items()
         self.report_view.display_players_list(players)
 
     def _validate_tournament_data(self, tournament_data):
@@ -89,19 +93,16 @@ class ApplicationController:
         """
         if not tournament_data["name"] or not tournament_data["location"]:
             return "Le nom et le lieu ne peuvent pas être vides."
-
         try:
             start = datetime.strptime(tournament_data["start_date"], "%Y-%m-%d")
             end = datetime.strptime(tournament_data["end_date"], "%Y-%m-%d")
         except ValueError:
             return "Format de date invalide. Veuillez utiliser YYYY-MM-DD."
-
         if end < start:
             return (
                 "La date de fin ne peut pas être antérieure à la date de "
                 "début."
             )
-
         rounds_str = tournament_data["number_of_rounds_str"]
         if rounds_str:
             try:
@@ -112,7 +113,6 @@ class ApplicationController:
                     )
             except ValueError:
                 return "Le nombre de tours doit être un nombre valide."
-
         return None
 
     def create_new_tournament(self):
@@ -125,9 +125,9 @@ class ApplicationController:
             if error:
                 self.view.display_validation_error(error)
                 continue
-
             rounds_str = tournament_data["number_of_rounds_str"]
             number_of_rounds = int(rounds_str) if rounds_str else 4
+            
             new_id = self.tournament_manager.get_next_id()
 
             tournament = Tournament(
@@ -140,7 +140,7 @@ class ApplicationController:
                 tournament_id=new_id
             )
 
-            self.tournament_manager.add_tournament(tournament)
+            self.tournament_manager.add_item(tournament)
             self.view.create_tournament_message(tournament.name)
             break
 
@@ -148,15 +148,14 @@ class ApplicationController:
         """
         Orchestrates the process of managing an existing tournament.
         """
-        tournaments = self.tournament_manager.load_tournaments()
 
-        # Ask user to select a tournament
+        tournaments = self.tournament_manager.load_items()
+
         selected_tournament = self.view.prompt_for_selection(
             tournaments,
             "--- Gérer un Tournoi Existant ---",
             "name"
         )
-
         if selected_tournament is None:
             self.view.display_message("Aucun tournoi sélectionné.")
             return
@@ -167,17 +166,17 @@ class ApplicationController:
             choice = self.view.display_tournament_management_menu(
                 selected_tournament.name
             )
-            if choice == "1":  # Register a player
+            if choice == "1":
                 self.add_player_to_tournament(selected_tournament)
-            elif choice == "2":  # Start the tournament
+            elif choice == "2":
                 self.view.display_message(
                     "\nDémarrage du tournoi... (Pas encore implémenté)"
                 )
-            elif choice == "3":  # Show results
+            elif choice == "3":
                 self.view.display_message(
                     "\nAffichage des résultats du tournoi... (Pas encore implémenté)"
                 ) 
-            elif choice == "4":  # Exit
+            elif choice == "4":
                 break
             else:
                 self.view.display_message("Choix invalide. Veuillez réessayer.")
@@ -186,46 +185,39 @@ class ApplicationController:
         """
         Adds an existing player to the selected tournament.
         """
-        # Load all players
-        all_players = self.player_manager.load_players()
+        all_players = self.player_manager.load_items()
 
-        # Get the list of already enrolled IDs
         enrolled_player_ids = {
-            player.national_id for player in tournament.players
+            player.player_id for player in tournament.players
         }
 
-        # Filter to only show unregistered players
         available_players = [
             player for player in all_players 
-            if player.national_id not in enrolled_player_ids
+            if player.player_id not in enrolled_player_ids
         ]
+        
         if not available_players:
             self.view.display_message("Tous les joueurs sont déjà inscrits à ce tournoi.")
             return
 
-        # Ask user to select a player
         selected_player = self.view.prompt_for_selection(
             available_players, 
             "Joueur", 
             "national_id"
         )
-
         if selected_player is None:
             self.view.display_message("Sélection annulée.")
             return
-
-        # Add player to tournament
+        
         tournament.players.append(selected_player)
 
-        # Save all tournaments with updated tournament
-        all_tournaments = self.tournament_manager.load_tournaments()
-        # Find and update the tournament in the list
+        all_tournaments = self.tournament_manager.load_items()
         for i, tournament_choice in enumerate(all_tournaments):
             if tournament_choice.tournament_id == tournament.tournament_id:
                 all_tournaments[i] = tournament
                 break
+        self.tournament_manager.save_items(all_tournaments)
         
-        self.tournament_manager.save_tournaments(all_tournaments)
         self.view.display_message(
             f"Le joueur {selected_player.first_name} {selected_player.last_name} "
             f"a été inscrit au tournoi {tournament.name}."
@@ -236,23 +228,21 @@ class ApplicationController:
             Helper method to convert a list of player IDs in a tournament
             into a list of full Player objects.
             """
-            # If the players are already Player objects, assume
-            # that it's already hydrated
-            if not tournament.players or hasattr(tournament.players[0], 'national_id'):
+            
+            if not tournament.players or hasattr(tournament.players[0], 'player_id'):
                 return
 
-            all_players = self.player_manager.load_players()
+            all_players = self.player_manager.load_items()
             hydrated_players = []
+            
             player_id_map = {
-                player.national_id: player for player in all_players
+                player.player_id: player for player in all_players
             }
-
+            
             for player_id in tournament.players:
                 if player_id in player_id_map:
                     hydrated_players.append(player_id_map[player_id])
                 else:
-                    # Manage the case where the player ID is not found,
-                    # but the player has been deleted
                     print(f"Attention: Joueur ID {player_id} non trouvé.")
             
             tournament.players = hydrated_players
@@ -261,10 +251,10 @@ class ApplicationController:
         """
         Loads tournaments and passes them to the report view.
         """
-        tournaments = self.tournament_manager.load_tournaments()
+        tournaments = self.tournament_manager.load_items()
         self.report_view.display_tournaments_list(tournaments)
 
-    # --- Need to implement ---
+    # --- These are placeholders. To be done later. ---
     def display_tournament_details_report(self):
         msg = ("\n--- Rapport sur les Détails d'un Tournoi --- (Pas encore implémenté)")
         self.view.display_message(msg)

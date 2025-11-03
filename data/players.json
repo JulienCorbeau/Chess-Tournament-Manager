@@ -1,5 +1,6 @@
 [
     {
+        "player_id": 1,
         "last_name": "CORBEAU",
         "first_name": "Julien",
         "date_of_birth": "1992-03-09",
@@ -8,6 +9,7 @@
         "opponents_history": []
     },
     {
+        "player_id": 2,
         "last_name": "MARTINS",
         "first_name": "George",
         "date_of_birth": "1965-09-02",
@@ -16,6 +18,7 @@
         "opponents_history": []
     },
     {
+        "player_id": 3,
         "last_name": "LEMON",
         "first_name": "Joe",
         "date_of_birth": "1980-10-10",
@@ -24,6 +27,7 @@
         "opponents_history": []
     },
     {
+        "player_id": 4,
         "last_name": "DALTON",
         "first_name": "Joe",
         "date_of_birth": "1876-02-28",
@@ -32,6 +36,7 @@
         "opponents_history": []
     },
     {
+        "player_id": 5,
         "last_name": "LUCAS",
         "first_name": "George",
         "date_of_birth": "1958-08-22",
@@ -40,6 +45,7 @@
         "opponents_history": []
     },
     {
+        "player_id": 6,
         "last_name": "FISHER",
         "first_name": "David",
         "date_of_birth": "1971-04-21",
@@ -48,6 +54,7 @@
         "opponents_history": []
     },
     {
+        "player_id": 7,
         "last_name": "NOLAN",
         "first_name": "Christopher",
         "date_of_birth": "1980-07-30",
@@ -56,6 +63,7 @@
         "opponents_history": []
     },
     {
+        "player_id": 8,
         "last_name": "DUPONT",
         "first_name": "Pierre",
         "date_of_birth": "1988-09-14",
@@ -64,6 +72,7 @@
         "opponents_history": []
     },
     {
+        "player_id": 9,
         "last_name": "HOU",
         "first_name": "Yifan",
         "date_of_birth": "1994-02-04",
@@ -72,6 +81,7 @@
         "opponents_history": []
     },
     {
+        "player_id": 10,
         "last_name": "WENJUN",
         "first_name": "Ju",
         "date_of_birth": "1991-03-25",
@@ -80,6 +90,7 @@
         "opponents_history": []
     },
     {
+        "player_id": 11,
         "last_name": "ZHONGYI",
         "first_name": "Tan",
         "date_of_birth": "1991-05-21",
@@ -88,6 +99,7 @@
         "opponents_history": []
     },
     {
+        "player_id": 12,
         "last_name": "CARLSEN",
         "first_name": "Magnus",
         "date_of_birth": "1990-11-21",
@@ -96,6 +108,7 @@
         "opponents_history": []
     },
     {
+        "player_id": 13,
         "last_name": "HIKARU",
         "first_name": "Nakamura",
         "date_of_birth": "1987-08-30",
@@ -104,6 +117,7 @@
         "opponents_history": []
     },
     {
+        "player_id": 14,
         "last_name": "CARUANA",
         "first_name": "Fabiano",
         "date_of_birth": "1992-03-01",
@@ -112,6 +126,7 @@
         "opponents_history": []
     },
     {
+        "player_id": 15,
         "last_name": "SONG",
         "first_name": "Julien",
         "date_of_birth": "1985-06-15",
@@ -120,10 +135,29 @@
         "opponents_history": []
     },
     {
+        "player_id": 16,
         "last_name": "PRAGGNANANDHAA",
         "first_name": "Rameshbabu",
         "date_of_birth": "2005-01-25",
         "national_id": "RP20051",
+        "total_points": 0.0,
+        "opponents_history": []
+    },
+    {
+        "player_id": 17,
+        "last_name": "GUKESSH",
+        "first_name": "Dommaraju",
+        "date_of_birth": "2006-11-08",
+        "national_id": "DG20062",
+        "total_points": 0.0,
+        "opponents_history": []
+    },
+    {
+        "player_id": 18,
+        "last_name": "ABDUSATTOROV",
+        "first_name": "Nodirbek",
+        "date_of_birth": "2004-04-19",
+        "national_id": "NA20044",
         "total_points": 0.0,
         "opponents_history": []
     }

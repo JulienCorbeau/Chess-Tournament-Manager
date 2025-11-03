@@ -52,8 +52,8 @@ class Tournament:
 
         player_ids = []
         for player in self.players:
-            if hasattr(player, 'national_id'):
-                player_ids.append(player.national_id)
+            if hasattr(player, 'player_id'):
+                player_ids.append(player.player_id) 
             else:
                 player_ids.append(player)
 

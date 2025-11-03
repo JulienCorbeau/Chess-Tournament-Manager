@@ -10,9 +10,8 @@
         "current_round": 1,
         "rounds": [],
         "players": [
-            "JC19923",
-            "LG19588",
-            "PD19889"
+            1,
+            3
         ]
     },
     {
@@ -25,10 +24,7 @@
         "number_of_rounds": 6,
         "current_round": 1,
         "rounds": [],
-        "players": [
-            "GM19659",
-            "JD18762"
-        ]
+        "players": []
     },
     {
         "tournament_id": 3,
@@ -40,9 +36,7 @@
         "number_of_rounds": 3,
         "current_round": 1,
         "rounds": [],
-        "players": [
-            "JD18762"
-        ]
+        "players": []
     },
     {
         "tournament_id": 4,
@@ -54,9 +48,7 @@
         "number_of_rounds": 4,
         "current_round": 1,
         "rounds": [],
-        "players": [
-            "YH19942"
-        ]
+        "players": []
     },
     {
         "tournament_id": 5,
@@ -68,12 +60,6 @@
         "number_of_rounds": 4,
         "current_round": 1,
         "rounds": [],
-        "players": [
-            "NH19878",
-            "MC19902",
-            "FC19923",
-            "RP20051",
-            "JS19856"
-        ]
+        "players": []
     }
 ]
