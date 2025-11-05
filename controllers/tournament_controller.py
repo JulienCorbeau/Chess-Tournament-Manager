@@ -85,7 +85,7 @@ class TournamentController:
         selected_tournament = self._prompt_user_for_tournament(tournaments)
 
         if selected_tournament is None:
-            self.view.display_message("Aucun tournoi sélectionné.")
+            self.view.display_selection_cancelled()
             return
 
         self._hydrate_tournament_players(selected_tournament)
@@ -97,18 +97,13 @@ class TournamentController:
             if choice == "1":
                 self.add_player_to_tournament(selected_tournament)
             elif choice == "2":
-                self.view.display_message(
-                    "\nDémarrage du tournoi... (Pas encore implémenté)"
-                )
+                print("\nDémarrage du tournoi... (Pas encore implémenté)")
             elif choice == "3":
-                self.view.display_message(
-                    "\nAffichage des résultats du tournoi... (Pas encore implémenté)"
-                ) 
+                print("\nAffichage des résultats du tournoi... (Pas encore implémenté)")
             elif choice == "4":
                 break
             else:
-                self.view.display_message("Choix invalide. Veuillez réessayer.")
-
+                self.view.display_validation_error("Choix invalide. Veuillez réessayer.")
 
     def add_player_to_tournament(self, tournament):
         """
@@ -123,13 +118,13 @@ class TournamentController:
             if player.player_id not in enrolled_player_ids
         ]
         if not available_players:
-            self.view.display_message("Tous les joueurs sont déjà inscrits à ce tournoi.")
+            self.view.display_all_players_already_enrolled()
             return
 
         selected_player = self._prompt_user_for_player(available_players)
 
         if selected_player is None:
-            self.view.display_message("Sélection annulée.")
+            self.view.display_selection_cancelled()
             return
 
         tournament.players.append(selected_player)

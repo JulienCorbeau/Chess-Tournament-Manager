@@ -53,15 +53,6 @@ class MainView:
             "national_id": national_id
         }
 
-    def display_message(self, message):
-        """
-        Displays a general message to the user.
-
-        Args:
-            message (str): The message to display.
-        """
-        print(f"\n{message}\n")
-
     def create_player_message(self, last_name, first_name):
         """
         Displays a message confirming the creation of a new player.
@@ -171,3 +162,15 @@ D        Displays a welcoming message to the user.
             str: L'entrée brute de l'utilisateur.
         """
         return input("\nEntrez le numéro de votre choix : ")
+
+    def display_selection_cancelled(self):
+        """Affiche un message standard pour une sélection annulée."""
+        print("\nSélection annulée. Retour au menu précédent.")
+
+    def display_all_players_already_enrolled(self):
+        """Affiche un message d'erreur si tous les joueurs sont déjà inscrits."""
+        print("\nTous les joueurs de la base de données sont déjà inscrits à ce tournoi.")
+
+    def display_player_added_to_tournament(self, player_name, tournament_name):
+        """Affiche un message de succès après l'inscription d'un joueur."""
+        print(f"\nLe joueur {player_name} a été inscrit au tournoi {tournament_name}.")

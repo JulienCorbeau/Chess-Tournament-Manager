@@ -122,7 +122,7 @@ class ReportController:
             tournaments
         )
         if selected_tournament is None:
-            self.view.display_message("Sélection annulée.")
+            self.view.display_selection_cancelled()
             return
 
         self._hydrate_tournament_players(selected_tournament)
@@ -147,9 +147,6 @@ class ReportController:
     
     # --- Placeholders for future reports ---
     def display_tournament_details_report(self):
-        msg = ("\n--- Rapport sur les Détails d'un Tournoi --- (Pas encore implémenté)")
-        self.view.display_message(msg)
-
+        print("\n--- Rapport sur les Détails d'un Tournoi --- (Pas encore implémenté)")
     def display_tournament_rounds_report(self):
-        msg = ("\n--- Rapport sur les Rounds et Matchs d'un Tournoi --- (Pas encore implémenté)")
-        self.view.display_message(msg)
+        print("\n--- Rapport sur les Rounds et Matchs d'un Tournoi --- (Pas encore implémenté)")
