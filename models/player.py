@@ -9,7 +9,7 @@ class Player:
         national_id,
         total_points=0.0,
         opponents_history=None,
-        player_id=None,  # --- AJOUT ---
+        player_id=None,
     ):
         """
         Initializes a Player instance.
@@ -20,14 +20,14 @@ class Player:
         self.national_id = national_id
         self.total_points = total_points
         self.opponents_history = [] if opponents_history is None else opponents_history
-        self.player_id = player_id  # --- AJOUT ---
+        self.player_id = player_id
 
     def to_dict(self):
         """
         Serializes the Player object to a dictionary.
         """
         return {
-            "player_id": self.player_id,  # --- AJOUT ---
+            "player_id": self.player_id,
             "last_name": self.last_name,
             "first_name": self.first_name,
             "date_of_birth": self.date_of_birth,

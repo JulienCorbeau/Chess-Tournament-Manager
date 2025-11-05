@@ -24,11 +24,8 @@ class MenuController:
                 self.tournament_controller.create_new_tournament()
             elif choice == "3":  # Manage tournament
                 self.tournament_controller.manage_tournament()
-            
             elif choice == "4":  # Show reports menu
-                # Cet appel est maintenant correct !
                 self.report_controller.show_reports_menu() 
-            
             elif choice == "5":  # Close application
                 self.view.display_goodbye_message()
                 break

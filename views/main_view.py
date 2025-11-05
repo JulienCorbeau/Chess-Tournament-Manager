@@ -143,38 +143,31 @@ D        Displays a welcoming message to the user.
         print("4. Retourner au menu principal")
         return input("\nEntrez votre choix : ")
     
-    def prompt_for_selection(self, items, title, item_name_attr):
+    def display_selection_list(self, title, items_as_strings):
         """
-        Displays a numbered list of items and asks the user to select one.
+        Affiche un titre et une liste d'options déjà formatées.
+        C'est une méthode "bête" qui ne fait qu'afficher.
         
         Args:
-            items (list): The list of objects to choose from. (e.g., list of Player or Tournament instances).
-            title (str): Title to display for the list. (e.g., "Tournois" or "Joueurs").
-            item_name_attr (str): The attribute of the object to display as its name (e.g., "name" or "national_id").
-
-        Returns:
-            object: The selected item, or None if no selection.
+            title (str): Le titre à afficher (ex: "Sélection d'un Tournoi").
+            items_as_strings (list): Une liste de strings (ex: ["1. Tournoi A", "2. Tournoi B"]).
         """
-        print(f"\n--- Sélectionner un {title} ---")
-        if not items:
-            print(f"Aucun {title.lower()} disponible.")
-            return None
-        
-        for index, item in enumerate(items, start=1):
-            if item_name_attr == "name":
-                print(f"{index}. {item.name} (ID: {item.tournament_id})")
-            else:
-                print(f"{index}. {item.first_name} {item.last_name} (ID: {item.national_id})")
-        print("0. Annuler")
+        print(f"\n--- {title} ---")
+        if not items_as_strings:
+            print("Aucune option disponible.")
+            return False 
 
-        while True:
-            try:
-                choice = int(input("\nEntrez le numéro de votre choix : "))
-                if choice == 0:
-                    return None
-                elif 1 <= choice <= len(items):
-                    return items[choice - 1]
-                else:
-                    print("Choix invalide. Veuillez réessayer.")
-            except ValueError:
-                print("Entrée invalide. Veuillez entrer un numéro.")
+        for line in items_as_strings:
+            print(line)
+        print("0. Annuler")
+        return True
+
+    def prompt_for_choice(self):
+        """
+        Demande simplement à l'utilisateur d'entrer un numéro.
+        Ne fait aucune validation.
+        
+        Returns:
+            str: L'entrée brute de l'utilisateur.
+        """
+        return input("\nEntrez le numéro de votre choix : ")

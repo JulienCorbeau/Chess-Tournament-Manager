@@ -81,12 +81,9 @@ class TournamentController:
         Orchestrates the process of managing an existing tournament.
         """
         tournaments = self.tournament_manager.load_items()
+        
+        selected_tournament = self._prompt_user_for_tournament(tournaments)
 
-        selected_tournament = self.view.prompt_for_selection(
-            tournaments,
-            "--- Gérer un Tournoi Existant ---",
-            "name"
-        )
         if selected_tournament is None:
             self.view.display_message("Aucun tournoi sélectionné.")
             return
@@ -112,36 +109,30 @@ class TournamentController:
             else:
                 self.view.display_message("Choix invalide. Veuillez réessayer.")
 
+
     def add_player_to_tournament(self, tournament):
         """
         Adds an existing player to the selected tournament.
         """
         all_players = self.player_manager.load_items()
-
         enrolled_player_ids = {
             player.player_id for player in tournament.players
         }
-
         available_players = [
             player for player in all_players 
             if player.player_id not in enrolled_player_ids
         ]
-        
         if not available_players:
             self.view.display_message("Tous les joueurs sont déjà inscrits à ce tournoi.")
             return
 
-        selected_player = self.view.prompt_for_selection(
-            available_players, 
-            "Joueur", 
-            "national_id"
-        )
+        selected_player = self._prompt_user_for_player(available_players)
+
         if selected_player is None:
             self.view.display_message("Sélection annulée.")
             return
-        
-        tournament.players.append(selected_player)
 
+        tournament.players.append(selected_player)
         all_tournaments = self.tournament_manager.load_items()
         for i, tournament_choice in enumerate(all_tournaments):
             if tournament_choice.tournament_id == tournament.tournament_id:
@@ -152,7 +143,7 @@ class TournamentController:
         self.view.display_message(
             f"Le joueur {selected_player.first_name} {selected_player.last_name} "
             f"a été inscrit au tournoi {tournament.name}."
-        )    
+        )
     
     def _hydrate_tournament_players(self, tournament):
             """
@@ -177,3 +168,58 @@ class TournamentController:
                     print(f"Attention: Joueur ID {player_id} non trouvé.")
             
             tournament.players = hydrated_players
+
+    def _prompt_user_for_tournament(self, tournaments):
+        """
+        Gère le processus de sélection d'un tournoi.
+        """
+        items_as_strings = []
+        for i, item in enumerate(tournaments, 1):
+            line = f"{i}. {item.name} (ID: {item.tournament_id})"
+            items_as_strings.append(line)
+            
+        if not self.view.display_selection_list("Sélectionner un Tournoi", items_as_strings):
+            return None 
+
+        while True:
+            choice_str = self.view.prompt_for_choice()
+            
+            if not choice_str.isdigit():
+                self.view.display_validation_error("Veuillez entrer un numéro valide.")
+                continue
+
+            choice_int = int(choice_str)
+            
+            if choice_int == 0:
+                return None
+            if 1 <= choice_int <= len(tournaments):
+                return tournaments[choice_int - 1] 
+            else:
+                self.view.display_validation_error("Ce numéro n'est pas dans la liste.")
+
+    def _prompt_user_for_player(self, players):
+        """
+        Gère le processus de sélection d'un joueur.
+        """
+        items_as_strings = []
+        for i, item in enumerate(players, 1):
+            line = f"{i}. {item.last_name} {item.first_name} (ID: {item.player_id})"
+            items_as_strings.append(line)
+
+        if not self.view.display_selection_list("Sélectionner un Joueur", items_as_strings):
+            return None
+
+        while True:
+            choice_str = self.view.prompt_for_choice()
+            if not choice_str.isdigit():
+                self.view.display_validation_error("Veuillez entrer un numéro valide.")
+                continue
+
+            choice_int = int(choice_str)
+            
+            if choice_int == 0:
+                return None
+            if 1 <= choice_int <= len(players):
+                return players[choice_int - 1]
+            else:
+                self.view.display_validation_error("Ce numéro n'est pas dans la liste.")

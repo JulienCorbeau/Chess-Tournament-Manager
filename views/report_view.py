@@ -1,78 +1,55 @@
 class ReportView:
-    """Handles the display of all reports."""
+    """
+    Handles the display of all reports in a generic way.
+    This view is "dumb" and only prints what it is given.
+    """
     
-    def display_players_list(self, players):
+    def display_table(self, title, headers, rows):
         """
-        Displays a formatted list of players.
-        """
-        print("\n--- List of All Players ---")
-        if not players:
-            print("Pas de joueurs présents dans la base de données.")
-            return
-
-        sorted_players = sorted(
-            players,
-            key=lambda player: (player.last_name.lower(), player.first_name.lower())
-        )
-
-        print(f"{'Nom':<20} {'Prénom':<20} {'Né(e) le':<15} {'ID Nationale'}")
-        print("-" * 75)
-        for player in sorted_players:
-            line = (
-                f"{player.last_name:<20} {player.first_name:<20} "
-                f"{player.date_of_birth:<15} {player.national_id}"
-            )
-            print(line)
-        print("-" * 75)
-
-    def display_tournaments_list(self, tournaments):
-        """
-        Displays a formatted list of all tournaments.
-        """
-        print("\n--- Liste de Tous les Tournois ---")
-        if not tournaments:
-            print("Aucun tournoi trouvé dans la base de données.")
-            return
-        
-        sorted_tournaments = sorted(
-            tournaments,
-            key=lambda tournament: tournament.start_date
-        )
-        
-        print(f"{'Nom du Tournoi':<30} {'Lieu':<25} {'Début':<12} {'Fin':<12}")
-        print("-" * 80)
-        for tournament in sorted_tournaments:
-            line = (
-                f"{tournament.name:<30} {tournament.location:<25} "
-                f"{tournament.start_date:<12} {tournament.end_date:<12}"
-            )
-            print(line)
-        print("-" * 80)
-
-    def display_tournament_players(self, players, tournament_name):
-        """
-        Affiche la liste des joueurs d'un tournoi, triés par ordre alphabétique.
+        Displays a formatted table based on provided data.
 
         Args:
-            players (list): Une liste d'objets Player.
-            tournament_name (str): Le nom du tournoi pour le titre.
+            title (str): The title to print above the table.
+            headers (list): A list of strings for the column headers.
+            rows (list): A list of lists, where each inner list
+                         represents a row's data.
         """
-        print(f"\n--- Joueurs Inscrits au Tournoi : {tournament_name} ---")
-        if not players:
-            print("Aucun joueur n'est encore inscrit à ce tournoi.")
+        print(f"\n--- {title} ---")
+        
+        if not rows:
+            print("Aucune donnée à afficher.")
             return
 
-        sorted_players = sorted(
-            players,
-            key=lambda player: (player.last_name.lower(), player.first_name.lower())
-        )
+        # 1. Calculate column widths based on headers and data
+        num_columns = len(headers)
+        # Initialize widths with header lengths
+        col_widths = [len(h) for h in headers]
 
-        print(f"{'Nom':<20} {'Prénom':<20} {'ID Nationale'}")
-        print("-" * 60)
-        for player in sorted_players:
-            line = (
-                f"{player.last_name:<20} {player.first_name:<20} "
-                f"{player.national_id}"
-            )
-            print(line)
-        print("-" * 60)
+        # Check data for wider content
+        for row in rows:
+            for i in range(num_columns):
+                cell_width = len(str(row[i]))
+                if cell_width > col_widths[i]:
+                    col_widths[i] = cell_width
+
+        # 2. Print Headers
+        header_line = ""
+        separator_line = ""
+        for i in range(num_columns):
+            # Add 2 spaces for padding
+            width = col_widths[i] + 2
+            header_line += f"{headers[i]:<{width}}"
+            separator_line += "-" * width
+        
+        print(header_line)
+        print(separator_line)
+
+        # 3. Print Rows
+        for row in rows:
+            row_line = ""
+            for i in range(num_columns):
+                width = col_widths[i] + 2
+                row_line += f"{str(row[i]):<{width}}"
+            print(row_line)
+        
+        print(separator_line)

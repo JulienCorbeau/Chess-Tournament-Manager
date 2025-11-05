@@ -18,25 +18,25 @@ class ApplicationController:
         """
         Initializes all managers, views, and specialized controllers.
         """
-        # Create views and managers
         self.view = MainView()
         self.report_view = ReportView()
         self.player_manager = PlayerManager()
         self.tournament_manager = TournamentManager()
-
-        # Create specialized controllers
+        
         self.player_controller = PlayerController(
             self.player_manager, self.view
         )
+        
         self.tournament_controller = TournamentController(
             self.tournament_manager, self.player_manager, self.view
         )
+        
         self.report_controller = ReportController(
             self.player_manager, self.tournament_manager,
-            self.view, self.report_view
+            self.view, self.report_view,
+            self.tournament_controller 
         )
 
-        # Create the menu controller and give it all specialists
         self.menu_controller = MenuController(
             self.player_controller,
             self.tournament_controller,

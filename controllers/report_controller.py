@@ -1,5 +1,3 @@
-# controllers/report_controller.py
-
 from models.player import Player
 from models.tournament import Tournament
 
@@ -7,14 +5,15 @@ class ReportController:
     """
     Manages all logic related to generating reports.
     """
-    def __init__(self, player_manager, tournament_manager, view, report_view):
+    def __init__(self, player_manager, tournament_manager, view, report_view, tournament_controller):
         """
         Initializes the ReportController.
         """
         self.player_manager = player_manager
         self.tournament_manager = tournament_manager
-        self.view = view  # For selection menus
-        self.report_view = report_view  # For displaying the final report
+        self.view = view
+        self.report_view = report_view
+        self.tournament_controller = tournament_controller
 
     def show_reports_menu(self):
         """
@@ -63,42 +62,89 @@ class ReportController:
 
     def display_all_players_report(self):
         """
-        Loads all players and tells the view to display them.
+        Loads, sorts, and formats all players,
+        then passes them to the view for display.
         """
         players = self.player_manager.load_items()
-        self.report_view.display_players_list(players)
+
+        sorted_players = sorted(
+            players,
+            key=lambda p: (p.last_name.lower(), p.first_name.lower())
+        )
+
+        title = "Liste de Tous les Joueurs"
+        headers = ["ID", "Nom", "Prénom", "Date Naissance", "ID Echecs"]
+        rows = []
+        for p in sorted_players:
+            rows.append([
+                p.player_id,
+                p.last_name,
+                p.first_name,
+                p.date_of_birth,
+                p.national_id
+            ])
+
+        self.report_view.display_table(title, headers, rows)
 
     def display_all_tournaments_report(self):
         """
-        Loads all tournaments and tells the view to display them.
+        Loads, sorts, and formats all tournaments,
+        then passes them to the view for display.
         """
         tournaments = self.tournament_manager.load_items()
-        self.report_view.display_tournaments_list(tournaments)
+
+        sorted_tournaments = sorted(
+            tournaments,
+            key=lambda t: t.start_date
+        )
+
+        title = "Liste de Tous les Tournois"
+        headers = ["ID", "Nom du Tournoi", "Lieu", "Début", "Fin"]
+        rows = []
+        for t in sorted_tournaments:
+            rows.append([
+                t.tournament_id,
+                t.name,
+                t.location,
+                t.start_date,
+                t.end_date
+            ])
+        
+        self.report_view.display_table(title, headers, rows)
 
     def display_tournament_players_report(self):
         """
         Handles the logic for showing all players in one tournament.
         """
-        # Ask user to select a tournament
         tournaments = self.tournament_manager.load_items()
-        selected_tournament = self.view.prompt_for_selection(
-            tournaments,
-            "Rapport : Joueurs d'un Tournoi",
-            "name"
+        
+        selected_tournament = self.tournament_controller._prompt_user_for_tournament(
+            tournaments
         )
         if selected_tournament is None:
             self.view.display_message("Sélection annulée.")
             return
 
-        # Load the full player objects
         self._hydrate_tournament_players(selected_tournament)
 
-        # Call the correct view to display them
-        self.report_view.display_tournament_players(
+        sorted_players = sorted(
             selected_tournament.players,
-            selected_tournament.name
+            key=lambda p: (p.last_name.lower(), p.first_name.lower())
         )
 
+        title = f"Joueurs Inscrits au Tournoi : {selected_tournament.name}"
+        headers = ["Nom", "Prénom", "ID Echecs"]
+        rows = []
+        for p in sorted_players:
+            rows.append([
+                p.last_name,
+                p.first_name,
+                p.national_id
+            ])
+
+        self.report_view.display_table(title, headers, rows)
+    
+    
     # --- Placeholders for future reports ---
     def display_tournament_details_report(self):
         msg = ("\n--- Rapport sur les Détails d'un Tournoi --- (Pas encore implémenté)")
