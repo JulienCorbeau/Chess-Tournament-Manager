@@ -169,5 +169,14 @@
         "national_id": "AF20034",
         "total_points": 0.0,
         "opponents_history": []
+    },
+    {
+        "player_id": 20,
+        "last_name": "WEI",
+        "first_name": "Yi",
+        "date_of_birth": "1999-06-19",
+        "national_id": "YW19996",
+        "total_points": 0.0,
+        "opponents_history": []
     }
 ]
