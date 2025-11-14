@@ -1,13 +1,15 @@
 import re
 from datetime import datetime
 from models.player import Player
+from managers.player_manager import PlayerManager
+from views.main_view import MainView
 
 class PlayerController:
     """
     Manages all logic related to players
     (creation, validation, etc.).
     """
-    def __init__(self, player_manager, view):
+    def __init__(self):
         """
         Initializes the PlayerController.
 
@@ -15,8 +17,8 @@ class PlayerController:
             player_manager (PlayerManager): The manager for player data.
             view (MainView): The main view for user interaction.
         """
-        self.player_manager = player_manager
-        self.view = view
+        self.player_manager = PlayerManager()
+        self.view = MainView()
 
     def add_new_player(self):
         """

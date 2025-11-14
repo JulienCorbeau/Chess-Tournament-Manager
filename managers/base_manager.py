@@ -100,3 +100,26 @@ class BaseManager:
         items = self.load_items()  # 1. Load all items
         items.append(item)        # 2. Add the new one
         self.save_items(items)    # 3. Save the full list
+
+    def get_item_by_id(self, item_id):
+        """
+        Finds and returns a single item by its ID.
+        Returns None if not found.
+        """
+        all_items = self.load_items()
+        for item in all_items:
+            if getattr(item, self.id_attribute_name) == item_id:
+                return item
+        return None
+
+    def get_items_by_ids(self, ids):
+        """
+        Finds and returns a list of items from a list of IDs.
+        """
+        all_items = self.load_items()
+        id_set = set(ids) 
+        found_items = []
+        for item in all_items:
+            if getattr(item, self.id_attribute_name) in id_set:
+                found_items.append(item)
+        return found_items

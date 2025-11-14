@@ -1,23 +1,29 @@
 import datetime
+
 class Round:
     """
     Represents a single round (like "Round 1") in a tournament.
     It contains a list of matches.
     """
-    def __init__(self, name, matches=None, start_date_time=None, 
-                 end_date_time=None):
+    def __init__(
+            self,
+            name,
+            matches=None,
+            start_date_time=None, 
+            end_date_time=None,
+            round_id=None,
+    ):
         """
         This is the "builder" for the Round object.
 
         Args:
             name (str): The name of the round (e.g., "Round 1").
-            matches (list): A list of match tuples.
-            start_date_time (str): The start time (ISO format string).
-            end_date_time (str): The end time (ISO format string).
+            matches (list): A list of match tuples .
+           start_date_time (str): The start time (ISO format string).
+           end_date_time (str): The end time (ISO format string).
         """
         self.name = name
         
-        # A match is a tuple: ([player_id_A, 0.0], [player_id_B, 0.0])
         self.matches = matches if matches is not None else []
         
         # If no start time is given, set it to "now"
@@ -27,6 +33,7 @@ class Round:
             self.start_date_time = start_date_time
             
         self.end_date_time = end_date_time  # This is None at the beginning
+        self.round_id = round_id
 
     def to_dict(self):
         """
@@ -62,6 +69,7 @@ class Round:
 
         # Return the final dictionary
         return {
+            "round_id": self.round_id,
             "name": self.name,
             "start_date_time": self.start_date_time,
             "end_date_time": self.end_date_time,

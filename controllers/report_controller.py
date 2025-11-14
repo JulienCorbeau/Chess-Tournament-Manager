@@ -1,19 +1,26 @@
 from models.player import Player
 from models.tournament import Tournament
+from managers.player_manager import PlayerManager
+from managers.tournament_manager import TournamentManager
+from views.main_view import MainView
+from views.report_view import ReportView
+from controllers.tournament_controller import TournamentController
 
 class ReportController:
     """
     Manages all logic related to generating reports.
     """
-    def __init__(self, player_manager, tournament_manager, view, report_view, tournament_controller):
+    def __init__(self):
         """
         Initializes the ReportController.
+        It creates its own dependencies.
         """
-        self.player_manager = player_manager
-        self.tournament_manager = tournament_manager
-        self.view = view  
-        self.report_view = report_view  
-        self.tournament_controller = tournament_controller 
+        self.player_manager = PlayerManager()
+        self.tournament_manager = TournamentManager()
+        self.view = MainView()
+        self.report_view = ReportView()
+        self.tournament_controller = TournamentController()
+        self.tournament_controller.set_report_controller(self)
 
     def show_reports_menu(self):
         """
@@ -35,34 +42,6 @@ class ReportController:
                 break
             else:
                 self.view.display_validation_error("Choix invalide.")
-
-    def _hydrate_tournament_players(self, tournament):
-            """
-            Internal helper.
-            Converts a list of player IDs (like [1, 2])
-            into a list of full Player Objects ([<Player 1>, <Player 2>]).
-            """
-            # If list is empty or already has objects, do nothing
-            if not tournament.players or hasattr(tournament.players[0], 'player_id'):
-                return
-
-            all_players = self.player_manager.load_items()
-            hydrated_players = []
-            
-            # Create a "fast lookup" map (ID -> Object)
-            player_id_map = {
-                player.player_id: player for player in all_players
-            }
-            
-            # Convert the tournament's ID list
-            for player_id in tournament.players:
-                if player_id in player_id_map:
-                    hydrated_players.append(player_id_map[player_id])
-                else:
-                    # This case should not happen if data is clean
-                    print(f"Attention: Joueur ID {player_id} non trouvé.")
-            
-            tournament.players = hydrated_players
 
     def display_all_players_report(self):
         """
@@ -137,10 +116,7 @@ class ReportController:
             self.view.display_selection_cancelled()
             return
 
-        # 3. Load the full Player objects for this tournament
-        self._hydrate_tournament_players(selected_tournament)
-
-        # 4. Sort the players
+        # 3. Sort the players
         sorted_players = sorted(
             selected_tournament.players,
             key=lambda p: (p.last_name.lower(), p.first_name.lower())

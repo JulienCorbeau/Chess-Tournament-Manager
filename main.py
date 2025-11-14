@@ -1,13 +1,12 @@
-from controllers.application_controller import ApplicationController
-
+from controllers.main_controller import MainController
 
 def main():
     """
     Main entry point for the Chess Tournament Management application.
     """
     # 1. Create the main application controller
-    app = ApplicationController()
-    
+    app = MainController()
+
     # 2. Start the application
     app.run()
 

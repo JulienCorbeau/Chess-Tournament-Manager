@@ -3,6 +3,9 @@ import random
 from datetime import datetime
 from models.tournament import Tournament
 from models.round import Round
+from managers.tournament_manager import TournamentManager
+from managers.player_manager import PlayerManager
+from views.main_view import MainView
 
 class TournamentController:
     """
@@ -10,13 +13,17 @@ class TournamentController:
     - Creation and validation
     - Managing a specific tournament (adding players, starting rounds)
     """
-    def __init__(self, tournament_manager, player_manager, view):
+    def __init__(self):
         """
         Initializes the TournamentController.
         """
-        self.tournament_manager = tournament_manager
-        self.player_manager = player_manager
-        self.view = view
+        self.tournament_manager = TournamentManager()
+        self.player_manager = PlayerManager()
+        self.view = MainView()
+        self.report_controller = None 
+    
+    def set_report_controller(self, report_controller):
+        self.report_controller = report_controller
 
     def _validate_tournament_data(self, tournament_data):
         """
@@ -92,11 +99,7 @@ class TournamentController:
             self.view.display_selection_cancelled()
             return
 
-        # 3. Load the full objects for players and rounds
-        self._hydrate_tournament_players(selected_tournament)
-        self._hydrate_tournament_rounds(selected_tournament)
-
-        # 4. Show the specific sub-menu
+        # 3. Show the specific sub-menu
         while True:
             choice = self.view.display_tournament_management_menu(
                 selected_tournament
@@ -155,93 +158,71 @@ class TournamentController:
         player_name = f"{selected_player.first_name} {selected_player.last_name}"
         self.view.display_player_added_to_tournament(player_name, tournament.name)
     
-    def _hydrate_tournament_players(self, tournament):
-            """
-            Internal helper.
-            Converts a list of player IDs (like [1, 2])
-            into a list of full Player Objects ([<Player 1>, <Player 2>]).
-            """
-            # If list is empty or already has objects, do nothing
-            if not tournament.players or hasattr(tournament.players[0], 'player_id'):
-                return
-
-            all_players = self.player_manager.load_items()
-            hydrated_players = []
-            player_id_map = {
-                player.player_id: player for player in all_players
-            }
-            
-            for player_id in tournament.players:
-                if player_id in player_id_map:
-                    hydrated_players.append(player_id_map[player_id])
-                else:
-                    print(f"Attention: Joueur ID {player_id} non trouvé.")
-            
-            tournament.players = hydrated_players
-
-    def _hydrate_tournament_rounds(self, tournament):
-        """
-        Internal helper.
-        Converts a list of round dicts (from JSON)
-        into a list of full Round Objects.
-        """
-        hydrated_rounds = []
-        for round_data in tournament.rounds:
-            if isinstance(round_data, Round):
-                hydrated_rounds.append(round_data)  # Already an object
-            else:
-                hydrated_rounds.append(Round(**round_data))  # Convert from dict
-        tournament.rounds = hydrated_rounds
-
     def _start_new_round(self, tournament):
         """
-        Generates the first round of the tournament.
+        Starts the tournament by creating the first round.
         """
-        # 1. Check if it's possible to start
+        
+        # --- 1. Validation Checks ---
         if tournament.rounds:
             self.view.display_validation_error("Le tournoi a déjà commencé.")
             return
-
         if len(tournament.players) < 2:
             self.view.display_validation_error("Il faut au moins 2 joueurs inscrits pour démarrer.")
             return
 
-        # 2. Get the list of players and shuffle them
+        # --- 2. Create Pairs (Random pairing for Round 1) ---
         players_list = list(tournament.players) 
         random.shuffle(players_list)
 
-        # 3. Create match pairs
         matches = []
         for i in range(0, len(players_list), 2):
-            # If there is an odd number of players, the last one is left out
             if i + 1 == len(players_list):
                 break 
     
             player1 = players_list[i]
             player2 = players_list[i+1]
             
-            # Create the match tuple: ([PlayerA, 0.0], [PlayerB, 0.0])
             match_tuple = (
-                [player1, 0.0],  # Player 1 and their score
-                [player2, 0.0]   # Player 2 and their score
+                [player1, 0.0],
+                [player2, 0.0]
             )
             matches.append(match_tuple)
 
-        # 4. Create the new Round object
+        # --- 3. Create and Save the Round ---
+        
+        # Find the next available round ID
+        all_tournaments = self.tournament_manager.load_items()
+        all_round_ids = []
+        for t in all_tournaments:
+            for r in t.rounds:
+                if r.round_id:
+                    all_round_ids.append(r.round_id)
+        
+        max_id = max(all_round_ids) if all_round_ids else 0
+        new_round_id = max_id + 1
+        
+        # Create the new Round object (e.g., "Round 1")
         round_name = f"Round {len(tournament.rounds) + 1}"
-        new_round = Round(name=round_name, matches=matches)
+        
+        new_round = Round(name=round_name, 
+                          matches=matches, 
+                          round_id=new_round_id)
 
-        # 5. Add the round to the tournament and save
+        # Add the new round to the tournament object in memory
         tournament.rounds.append(new_round)
         
-        all_tournaments = self.tournament_manager.load_items()
+        # --- 4. Save the updated tournament ---
+        # On utilise la liste 'all_tournaments' qu'on a déjà chargée
         for i, t in enumerate(all_tournaments):
             if t.tournament_id == tournament.tournament_id:
-                all_tournaments[i] = tournament
+                all_tournaments[i] = tournament  # Replace
                 break
+                
+        # Save the complete list back to the file
         self.tournament_manager.save_items(all_tournaments)
 
-        # 6. Show success message
+        # 5. Show success message to the user
         self.view.display_round_started(new_round.name, len(matches))
     
     def _prompt_user_for_tournament(self, tournaments):
