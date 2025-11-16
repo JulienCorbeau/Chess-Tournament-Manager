@@ -1,16 +1,142 @@
 [
-    {
-        "player_id": 1,
-        "last_name": "CORBEAU",
-        "first_name": "Julien",
-        "date_of_birth": "1992-03-09",
-        "national_id": "JC19923"
-    },
-    {
-        "player_id": 2,
-        "last_name": "CARLSEN",
-        "first_name": "Magnus",
-        "date_of_birth": "1988-12-03",
-        "national_id": "MG19883"
-    }
+  {
+    "player_id": 1,
+    "last_name": "CARLSEN",
+    "first_name": "Magnus",
+    "date_of_birth": "1990-11-30",
+    "national_id": "MC19901"
+  },
+  {
+    "player_id": 2,
+    "last_name": "NAKAMURA",
+    "first_name": "Hikaru",
+    "date_of_birth": "1987-12-09",
+    "national_id": "HN19872"
+  },
+  {
+    "player_id": 3,
+    "last_name": "CARUANA",
+    "first_name": "Fabiano",
+    "date_of_birth": "1992-07-30",
+    "national_id": "FC19923"
+  },
+  {
+    "player_id": 4,
+    "last_name": "KEYMER",
+    "first_name": "Vincent",
+    "date_of_birth": "2004-11-15",
+    "national_id": "VK20044"
+  },
+  {
+    "player_id": 5,
+    "last_name": "ERIGAISI",
+    "first_name": "Arjun",
+    "date_of_birth": "2003-09-03",
+    "national_id": "AE20035"
+  },
+  {
+    "player_id": 6,
+    "last_name": "GIRI",
+    "first_name": "Anish",
+    "date_of_birth": "1994-06-28",
+    "national_id": "AG19946"
+  },
+  {
+    "player_id": 7,
+    "last_name": "RAMESHBABU",
+    "first_name": "Praggnanandhaa",
+    "date_of_birth": "2005-08-10",
+    "national_id": "PR20057"
+  },
+  {
+    "player_id": 8,
+    "last_name": "SO",
+    "first_name": "Wesley",
+    "date_of_birth": "1993-10-09",
+    "national_id": "WS19938"
+  },
+  {
+    "player_id": 9,
+    "last_name": "DOMMARAJU",
+    "first_name": "Gukesh",
+    "date_of_birth": "2006-05-29",
+    "national_id": "GD20069"
+  },
+  {
+    "player_id": 10,
+    "last_name": "FIROUZJA",
+    "first_name": "Alireza",
+    "date_of_birth": "2003-06-18",
+    "national_id": "AF20030"
+  },
+  {
+    "player_id": 11,
+    "last_name": "WEI",
+    "first_name": "Yi",
+    "date_of_birth": "1999-06-02",
+    "national_id": "YW19991"
+  },
+  {
+    "player_id": 12,
+    "last_name": "ABDUSATTOROV",
+    "first_name": "Nodirbek",
+    "date_of_birth": "2004-09-18",
+    "national_id": "NA20042"
+  },
+  {
+    "player_id": 13,
+    "last_name": "ANAND",
+    "first_name": "Viswanathan",
+    "date_of_birth": "1969-12-11",
+    "national_id": "VA19693"
+  },
+  {
+    "player_id": 14,
+    "last_name": "MAMEDYAROV",
+    "first_name": "Shakhriyar",
+    "date_of_birth": "1985-04-12",
+    "national_id": "SM19854"
+  },
+  {
+    "player_id": 15,
+    "last_name": "RAPPORT",
+    "first_name": "Richard",
+    "date_of_birth": "1996-03-25",
+    "national_id": "RR19965"
+  },
+  {
+    "player_id": 16,
+    "last_name": "VACHIER-LAGRAVE",
+    "first_name": "Maxime",
+    "date_of_birth": "1990-10-21",
+    "national_id": "MV19906"
+  },
+  {
+    "player_id": 17,
+    "last_name": "DOMINGUEZ PEREZ",
+    "first_name": "Leinier",
+    "date_of_birth": "1983-09-23",
+    "national_id": "LD19837"
+  },
+  {
+    "player_id": 18,
+    "last_name": "DING",
+    "first_name": "Liren",
+    "date_of_birth": "1992-10-24",
+    "national_id": "LD19928"
+  },
+  {
+    "player_id": 19,
+    "last_name": "NEPOMNIACHTCHI",
+    "first_name": "Ian",
+    "date_of_birth": "1990-07-14",
+    "national_id": "IN19909"
+  },
+  {
+    "player_id": 20,
+    "last_name": "DUDA",
+    "first_name": "Jan-Krzysztof",
+    "date_of_birth": "1998-04-26",
+    "national_id": "JD19980"
+  }
 ]

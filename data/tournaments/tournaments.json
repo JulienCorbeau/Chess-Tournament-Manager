@@ -2,7 +2,7 @@
     {
         "tournament_id": 1,
         "name": "Tournoi de Paris",
-        "location": "Paris",
+        "location": "Montmartre",
         "description": "Le premier",
         "start_date": "2025-11-20",
         "end_date": "2025-11-25",
@@ -100,5 +100,57 @@
                 ]
             }
         }
-    }
+    },
+    {
+        "tournament_id": 2,
+        "name": "Tournoi de Lisbonne",
+        "location": "La Baixa",
+        "description": "Un rendez-vous attendu !",
+        "start_date": "2026-03-09",
+        "end_date": "2026-03-15",
+        "number_of_rounds": 8,
+        "current_round": 1,
+        "rounds": [],
+        "players": [],
+        "player_scores": {}
+    },
+    {
+    "tournament_id": 3,
+    "name": "Open de Berlin",
+    "location": "Mitte",
+    "description": "Classique et compétitif.",
+    "start_date": "2026-04-20",
+    "end_date": "2026-04-26",
+    "number_of_rounds": 7,
+    "current_round": 1,
+    "rounds": [],
+    "players": [],
+    "player_scores": {}
+  },
+  {
+    "tournament_id": 4,
+    "name": "Masters de New York",
+    "location": "Greenwich Village",
+    "description": "L'élite se rencontre à Manhattan.",
+    "start_date": "2026-06-01",
+    "end_date": "2026-06-08",
+    "number_of_rounds": 9,
+    "current_round": 1,
+    "rounds": [],
+    "players": [],
+    "player_scores": {}
+  },
+  {
+    "tournament_id": 5,
+    "name": "Championnat de Tokyo",
+    "location": "Shibuya",
+    "description": "Stratégie et précision au Japon.",
+    "start_date": "2026-09-05",
+    "end_date": "2026-09-12",
+    "number_of_rounds": 10,
+    "current_round": 1,
+    "rounds": [],
+    "players": [],
+    "player_scores": {}
+  }
 ]
