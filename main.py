@@ -1,16 +1,22 @@
+"""
+Chess Tournament Management Application
+
+Main entry point for the application.
+Creates and runs the main controller.
+"""
+
 from controllers.main_controller import MainController
+
 
 def main():
     """
-    Main entry point for the Chess Tournament Management application.
+    Application entry point.
+    
+    Creates the main controller and starts the application loop.
     """
-    # 1. Create the main application controller
     app = MainController()
-
-    # 2. Start the application
     app.run()
 
 
-# This line checks if the script is run directly (not imported)
 if __name__ == "__main__":
     main()

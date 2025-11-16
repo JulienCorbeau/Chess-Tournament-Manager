@@ -1,9 +1,36 @@
+"""
+Tournament Model
+
+Represents a chess tournament with its configuration, participants, and rounds.
+Following the anemic model pattern: contains only data attributes.
+Business logic is handled by TournamentManager.
+"""
+
 from models.round import Round
+
 
 class Tournament:
     """
-    Represents a single tournament.
-    This class is the "mold" for creating tournament objects.
+    A chess tournament with multiple rounds and players.
+    
+    Attributes:
+        tournament_id (int): Unique identifier
+        name (str): Tournament name
+        location (str): Tournament location
+        description (str): Tournament description
+        start_date (str): Start date in YYYY-MM-DD format
+        end_date (str): End date in YYYY-MM-DD format
+        number_of_rounds (int): Total number of rounds (default: 4)
+        current_round (int): Current round number (1-indexed)
+        rounds (list): List of Round objects
+        players (list): List of Player objects (hydrated by manager)
+        player_scores (dict): Tournament-specific player data
+                             Format: {player_id: {"total_points": float,
+                                                  "opponents_history": list}}
+    
+    Note on player_scores:
+        - total_points: Player's cumulative score in this tournament
+        - opponents_history: List of opponent IDs faced (includes -1 for byes)
     """
 
     def __init__(
@@ -17,11 +44,26 @@ class Tournament:
         current_round=1,
         rounds=None,
         players=None,
-        tournament_id=None
+        tournament_id=None,
+        player_scores=None
     ):
         """
-        This is the "builder" for the Tournament object.
+        Initialize a new Tournament instance.
+        
+        Args:
+            name (str): Tournament name
+            location (str): Tournament location
+            description (str): Tournament description
+            start_date (str): Start date in YYYY-MM-DD format
+            end_date (str): End date in YYYY-MM-DD format
+            number_of_rounds (int, optional): Total rounds. Defaults to 4.
+            current_round (int, optional): Current round number. Defaults to 1.
+            rounds (list, optional): List of Round objects. Defaults to empty list.
+            players (list, optional): List of Player objects. Defaults to empty list.
+            tournament_id (int, optional): Unique identifier. Auto-generated if None.
+            player_scores (dict, optional): Player performance data. Defaults to empty dict.
         """
+        self.tournament_id = tournament_id
         self.name = name
         self.location = location
         self.description = description
@@ -29,40 +71,40 @@ class Tournament:
         self.end_date = end_date
         self.number_of_rounds = number_of_rounds
         self.current_round = current_round
-        
-        # 'rounds' is a list that will hold Round objects
         self.rounds = rounds if rounds is not None else []
-        
-        # 'players' is a list that will hold Player objects (or IDs)
         self.players = players if players is not None else []
-        
-        self.tournament_id = tournament_id  # The internal ID (e.g., 1, 2, 3)
+        self.player_scores = player_scores if player_scores is not None else {}
 
     def to_dict(self):
         """
-        Converts the Tournament object into a dictionary
-        so it can be saved to the JSON file.
+        Convert the Tournament object to a dictionary for JSON serialization.
+        
+        This method "dehydrates" the tournament:
+        - Converts Player objects to player IDs
+        - Converts Round objects to dictionaries
+        - Preserves player_scores as-is (IDs are sufficient)
+        
+        Returns:
+            dict: Tournament data ready for JSON storage
         """
-
-        # --- Convert Player objects to IDs ---
-        # We only want to save the player's ID, not the whole object
+        # Convert Player objects to IDs
         player_ids = []
         for player in self.players:
-            if hasattr(player, 'player_id'):
-                player_ids.append(player.player_id)  # Get ID from object
-            else:
-                player_ids.append(player)  # It is already an ID
+            player_id = (
+                player.player_id
+                if hasattr(player, 'player_id')
+                else player
+            )
+            player_ids.append(player_id)
 
-        # --- Convert Round objects to dicts ---
-        # We must call .to_dict() on each Round object
+        # Convert Round objects to dictionaries
         serialized_rounds = []
         for round_item in self.rounds:
             if isinstance(round_item, Round):
-                serialized_rounds.append(round_item.to_dict())  # Convert object
+                serialized_rounds.append(round_item.to_dict())
             else:
-                serialized_rounds.append(round_item)  # It is already a dict
+                serialized_rounds.append(round_item)
 
-        # Return the final dictionary
         return {
             "tournament_id": self.tournament_id,
             "name": self.name,
@@ -72,6 +114,7 @@ class Tournament:
             "end_date": self.end_date,
             "number_of_rounds": self.number_of_rounds,
             "current_round": self.current_round,
-            "rounds": serialized_rounds,  # Save the converted list of rounds
-            "players": player_ids,       # Save the list of player IDs
+            "rounds": serialized_rounds,
+            "players": player_ids,
+            "player_scores": self.player_scores,
         }

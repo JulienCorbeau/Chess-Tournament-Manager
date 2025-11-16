@@ -1,125 +1,192 @@
+"""
+Base Manager
+
+Generic data persistence manager for model objects.
+Handles JSON file operations, ID generation, and basic CRUD operations.
+This class uses the Template Method pattern - child managers specify
+the file path, model class, and ID attribute name.
+
+Data Flow:
+    Load:  JSON file -> Python dict -> Model object (hydration)
+    Save:  Model object -> Python dict -> JSON file (dehydration)
+"""
+
 import json
 import os
 
+
 class BaseManager:
     """
-    Provides generic (all-purpose) methods for loading, saving,
-    and managing model instances (like Player or Tournament)
-    to a JSON file.
-    It also handles creating new auto-incrementing IDs.
+    Abstract base manager for data persistence.
+    
+    Provides generic methods for loading, saving, and managing model instances
+    in JSON files with auto-incrementing IDs.
+    
+    Attributes:
+        file_path (str): Path to the JSON storage file
+        model_class (class): The model class to instantiate (e.g., Player, Tournament)
+        id_attribute_name (str): Name of the ID field (e.g., "player_id")
     """
+
     def __init__(self, file_path, model_class, id_attribute_name):
         """
-        Initializes the manager.
-        This is called by the "child" managers (PlayerManager, etc.).
-
+        Initialize the base manager.
+        
         Args:
-            file_path (str): The path to the JSON file (e.g., "data/players.json").
-            model_class (class): The object type to create (e.g., Player).
-            id_attribute_name (str): The name of the ID field (e.g., "player_id").
+            file_path (str): Path to JSON file (e.g., "data/players.json")
+            model_class (class): Model class to create instances from
+            id_attribute_name (str): Name of the ID attribute
         """
         self.file_path = file_path
-        self.model_class = model_class  # The "mold" to create objects (e.g., Player)
-        self.id_attribute_name = id_attribute_name 
-        self._ensure_file_exists()  # Check if the file exists
+        self.model_class = model_class
+        self.id_attribute_name = id_attribute_name
+        self._ensure_file_exists()
+
+    # ========================================
+    # FILE SYSTEM OPERATIONS
+    # ========================================
 
     def _ensure_file_exists(self):
         """
-        Internal helper. Checks if the file and its directory exist.
-        If not, it creates them.
+        Create the storage file and its directory if they don't exist.
+        Initializes the file with an empty JSON array.
         """
-        dir_name = os.path.dirname(self.file_path)  # Get the folder part
-        if dir_name:  # If there is a folder 
-            os.makedirs(dir_name, exist_ok=True)  # Create it (don't crash if it exists)
+        dir_name = os.path.dirname(self.file_path)
+        
+        if dir_name:
+            os.makedirs(dir_name, exist_ok=True)
             
-        # If the file itself does not exist
         if not os.path.exists(self.file_path):
             with open(self.file_path, 'w') as f:
-                json.dump([], f)  # Create an empty file with an empty list
+                json.dump([], f)
 
     def _load_data(self):
-        """Internal helper. Loads raw data from the JSON file."""
+        """
+        Load raw data from the JSON file.
+        
+        Returns:
+            list: List of dictionaries from JSON file, or empty list if error
+        """
         try:
-            # Open the file with UTF-8 (for accents)
             with open(self.file_path, 'r', encoding='utf-8') as f:
-                return json.load(f)  # Read the data
+                return json.load(f)
         except (json.JSONDecodeError, FileNotFoundError):
-            return []  # Return empty list if file is broken or missing
+            return []
 
     def _save_data(self, data):
-        """Internal helper. Saves raw data to the JSON file."""
-        # Open the file with UTF-8 (for accents)
+        """
+        Save raw data to the JSON file.
+        
+        Args:
+            data (list): List of dictionaries to save
+        """
         with open(self.file_path, 'w', encoding='utf-8') as f:
-            # Save formatted (indent=4) and keep accents (ensure_ascii=False)
             json.dump(data, f, indent=4, ensure_ascii=False)
+
+    # ========================================
+    # CRUD OPERATIONS
+    # ========================================
 
     def load_items(self):
         """
-        Loads all items from the JSON file and converts
-        them into model instances (objects).
-        """
-        raw_data = self._load_data()  # Get the raw list of dicts
+        Load all items from JSON and convert them to model objects.
         
-        # Use the "mold" (self.model_class) to turn each dict into an object
-        # e.g., [Player(**data), Player(**data), ...]
+        This performs "hydration": raw dict data -> model instances
+        
+        Returns:
+            list: List of model instances (e.g., [Player, Player, ...])
+        """
+        raw_data = self._load_data()
         return [self.model_class(**data) for data in raw_data]
 
     def save_items(self, items):
         """
-        Takes a list of model instances (objects), serializes them
-        (turns them into dicts), and saves them to the JSON file.
+        Convert model objects to dictionaries and save to JSON.
+        
+        This performs "dehydration": model instances -> raw dict data
+        
+        Args:
+            items (list): List of model instances to save
         """
-        # Call the .to_dict() method on each object
         data_to_save = [item.to_dict() for item in items]
         self._save_data(data_to_save)
 
+    def add_item(self, item):
+        """
+        Add a new item to the storage.
+        
+        Args:
+            item: Model instance to add (must have to_dict() method)
+        """
+        items = self.load_items()
+        items.append(item)
+        self.save_items(items)
+
+    # ========================================
+    # ID MANAGEMENT
+    # ========================================
+
     def get_next_id(self):
         """
-        Loads all items, finds the maximum ID, and returns the next ID.
-        This is our auto-increment logic.
-        """
-        items = self.load_items()  # Load all objects
-        if not items:
-            return 1  # If no items, start at 1
-
-        ids = []
-        for item in items:
-            # Get the ID value (e.g., item.player_id)
-            item_id = getattr(item, self.id_attribute_name, None)
-            if item_id is not None:
-                ids.append(item_id)
+        Generate the next available ID using auto-increment logic.
         
-        # Find the biggest ID, or 0 if the list is empty
+        Finds the maximum existing ID and returns max + 1.
+        
+        Returns:
+            int: Next available ID (starts at 1 if no items exist)
+        """
+        items = self.load_items()
+        
+        if not items:
+            return 1
+
+        ids = [
+            getattr(item, self.id_attribute_name)
+            for item in items
+            if getattr(item, self.id_attribute_name, None) is not None
+        ]
+        
         max_id = max(ids) if ids else 0
         return max_id + 1
 
-    def add_item(self, item):
-        """
-        Adds a new item to the storage file.
-        """
-        items = self.load_items()  # 1. Load all items
-        items.append(item)        # 2. Add the new one
-        self.save_items(items)    # 3. Save the full list
+    # ========================================
+    # QUERY OPERATIONS
+    # ========================================
 
     def get_item_by_id(self, item_id):
         """
-        Finds and returns a single item by its ID.
-        Returns None if not found.
+        Find and return a single item by its ID.
+        
+        Args:
+            item_id (int): ID to search for
+            
+        Returns:
+            Model instance if found, None otherwise
         """
         all_items = self.load_items()
+        
         for item in all_items:
             if getattr(item, self.id_attribute_name) == item_id:
                 return item
+        
         return None
 
     def get_items_by_ids(self, ids):
         """
-        Finds and returns a list of items from a list of IDs.
+        Find and return multiple items by their IDs.
+        
+        Args:
+            ids (list): List of IDs to search for
+            
+        Returns:
+            list: List of found model instances
         """
         all_items = self.load_items()
-        id_set = set(ids) 
-        found_items = []
-        for item in all_items:
-            if getattr(item, self.id_attribute_name) in id_set:
-                found_items.append(item)
+        id_set = set(ids)
+        
+        found_items = [
+            item for item in all_items
+            if getattr(item, self.id_attribute_name) in id_set
+        ]
+        
         return found_items

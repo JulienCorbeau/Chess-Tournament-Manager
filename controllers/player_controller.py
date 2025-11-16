@@ -1,76 +1,104 @@
+"""
+Player Controller
+
+Manages player creation and validation logic.
+"""
+
 import re
 from datetime import datetime
 from models.player import Player
 from managers.player_manager import PlayerManager
 from views.main_view import MainView
 
+
 class PlayerController:
     """
-    Manages all logic related to players
-    (creation, validation, etc.).
+    Controller for player-related operations.
+    
+    Responsibilities:
+    - Orchestrate player creation workflow
+    - Validate player data
+    - Coordinate between view and manager
+    
+    Following Principle #2: Autonomous components (creates own dependencies)
+    Following Principle #4: Single responsibility (only handles players)
     """
-    def __init__(self):
-        """
-        Initializes the PlayerController.
 
-        Args:
-            player_manager (PlayerManager): The manager for player data.
-            view (MainView): The main view for user interaction.
-        """
+    def __init__(self):
+        """Initialize controller with its dependencies."""
         self.player_manager = PlayerManager()
         self.view = MainView()
 
+    # ========================================
+    # PUBLIC METHODS
+    # ========================================
+
     def add_new_player(self):
         """
-        Orchestrates the process of adding a new player.
+        Orchestrate the player creation workflow.
+        
+        Workflow:
+        1. Prompt user for player data
+        2. Validate data
+        3. Generate new ID
+        4. Create Player object
+        5. Save to storage
+        6. Display success message
         """
         while True:
-            # 1. Ask view to get data from user
             player_data = self.view.prompt_for_new_player()
             
-            # 2. Check if the data is valid
             error = self._validate_player_data(player_data)
             if error:
                 self.view.display_validation_error(error)
-                continue  # Ask again
+                continue
 
-            # 3. Get the next available ID from the manager
             new_id = self.player_manager.get_next_id()
 
-            # 4. Create the Player object
             player = Player(
                 last_name=player_data["last_name"].upper(),
                 first_name=player_data["first_name"].capitalize(),
                 date_of_birth=player_data["date_of_birth"],
                 national_id=player_data["national_id"],
-                player_id=new_id  
+                player_id=new_id
             )
             
-            # 5. Save the new player
             self.player_manager.add_item(player)
             
-            # 6. Show success message
-            self.view.create_player_message(
-                player.last_name, player.first_name
-            )
-            break  # Exit loop
+            self.view.create_player_message(player.last_name, player.first_name)
+            break
+
+    # ========================================
+    # VALIDATION
+    # ========================================
 
     def _validate_player_data(self, player_data):
         """
-        Internal helper. Checks if player data is valid.
-        Returns an error message (string) or None if valid.
+        Validate player data before creation.
+        
+        Validation rules:
+        - Names cannot be empty
+        - Date must be in YYYY-MM-DD format
+        - National ID must match pattern: 2 letters + 5 digits
+        
+        Args:
+            player_data (dict): Player data to validate
+        
+        Returns:
+            str: Error message if invalid, None if valid
         """
         if not player_data["last_name"] or not player_data["first_name"]:
             return "Le nom et le prénom ne peuvent pas être vides."
+        
         try:
             datetime.strptime(player_data["date_of_birth"], "%Y-%m-%d")
         except ValueError:
             return "Format de date invalide. Veuillez utiliser YYYY-MM-DD."
         
-        # Use regex to check for format "AA12345"
         if not re.match(r"^[A-Z]{2}\d{5}$", player_data["national_id"]):
             return (
-                "Format d'ID d'échecs national invalide. Il doit être "
-                "au format 'AB12345'."
+                "Format d'ID d'échecs national invalide. "
+                "Il doit être au format 'AB12345'."
             )
+        
         return None
